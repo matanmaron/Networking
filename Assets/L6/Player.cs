@@ -14,21 +14,8 @@ namespace L6
         {
             base.OnStartServer();
             isMyTurn = GameManager.Instance.IsMyTurn(this.connectionToClient.identity.netId);
+            GameManager.Instance.OnConnect();
             Debug.Log($"server: {this.connectionToClient.identity.netId} , myTurn=>{isMyTurn}");
-        }
-
-        public void Update()
-        {
-            if (isLocalPlayer && isMyTurn)
-            {
-                CmdTakeAction(1);
-            }
-        }
-
-        [Command]
-        private void CmdTakeAction(int squreID)
-        {
-            GameManager.Instance.AskToMove(squreID);
         }
     }
 }
