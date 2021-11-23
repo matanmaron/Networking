@@ -29,13 +29,6 @@ namespace L6
         private void CmdTakeAction(int squreID)
         {
             GameManager.Instance.AskToMove(squreID);
-            if (res)
-            {
-                GameManager.Instance.NextTurn();
-            }
-            else
-            {
-            }
         }
     }
 }

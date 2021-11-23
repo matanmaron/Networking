@@ -28,7 +28,7 @@ namespace L6
         }
         #endregion
 
-        [Serializable] UIManager _UIManager;
+        [SerializeField] UIManager _UIManager;
         private bool wasInit = false;
         private uint _playerIdTurn = 0;
         public uint PlayerIdTurn => _playerIdTurn;
