@@ -1,4 +1,3 @@
-using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,11 +5,10 @@ using UnityEngine.UI;
 
 namespace L6
 {
-    public class Cell : NetworkBehaviour
+    public class Cell : MonoBehaviour
     {
         [SerializeField] Text _cellText;
-        [SyncVar] [HideInInspector] public CellType CellValue = CellType.None;
-        [SyncVar] public int cellID;
+        [HideInInspector] public CellType CellValue = CellType.None;
 
         private void Start()
         {
@@ -20,25 +18,20 @@ namespace L6
 
         private void OnClick()
         {
-            if (!GameManager.Instance.ActiveGame)
+            if (CellValue!= CellType.None)
             {
+                Debug.Log("wrong move!");
                 return;
             }
-            if (hasAuthority)
-            {
-                GameManager.Instance.CmdAskToMove(cellID);
-            }
+            CellValue = GameManager.Instance.Turn;
+            _cellText.text = CellValue.ToString();
+            GameManager.Instance.AfterTurnChecks();
         }
 
         public void Clean()
         {
             CellValue = CellType.None;
             _cellText.text = string.Empty;
-        }
-
-        public void SetText(string cellText)
-        {
-            _cellText.text = cellText;
         }
     }
 }
