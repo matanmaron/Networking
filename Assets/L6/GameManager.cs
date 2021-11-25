@@ -26,11 +26,11 @@ namespace L6
         #endregion
 
         Cell[] _board;
-        GamePanel _gamePanel;
-        UIPanel _uiPanel;
 
         private bool wasInit = false;
         private uint playerIDTurn = 0;
+        bool _gameOver = false;
+
         public uint PlayerIDTurn => playerIDTurn;
 
         public bool IsMyTurn(uint playerNetID)
@@ -45,9 +45,33 @@ namespace L6
 
         private void Start()
         {
-            _gamePanel = FindObjectOfType<GamePanel>();
-            _uiPanel = FindObjectOfType<UIPanel>();
-            Init();
+            _board = FindObjectsOfType<Cell>().OrderBy(x => x.name).ToArray();
+            foreach (var cell in _board)
+            {
+                cell.Clean();
+            }
+        }
+
+        public void TakeAction(int squareID, bool isX)
+        {
+            Debug.Log($"take action on {squareID}");
+            if (_gameOver)
+            {
+                Debug.Log("GAME OVER...");
+                return;
+            }
+            if (_board[squareID-1].CellValue != CellType.None)
+            {
+                Debug.Log("TAKEN!!");
+                return;
+            }
+            _board[squareID-1].CellValue = isX ? CellType.X : CellType.O;
+            _board[squareID-1].SetText(_board[squareID-1].CellValue.ToString());
+            foreach (var p in FindObjectsOfType<Player>())
+            {
+                p.RPCUpdateCell(squareID);
+            }
+            AfterTurnChecks();
         }
 
         public void NextTurn()
@@ -74,21 +98,13 @@ namespace L6
             }
         }
 
-        private void Init()
-        {
-            _gamePanel.Init();
-        }
-
-        public void SetCells(List<Cell> cells)
-        {
-            _board = cells.ToArray();
-        }
-
         public void AfterTurnChecks()
         {
             if (isFullBoard())
             {
                 Debug.Log("board full, game over");
+                WinGame(CellType.None);
+                return;
             }
             var status = WhosWinning();
             switch (status)
@@ -103,13 +119,12 @@ namespace L6
                     break;
             }
             NextTurn();
-            _uiPanel.ShowTurn(FindObjectsOfType<Player>().First(x => x.isMyTurn).isX);
         }
 
         private void WinGame(CellType status)
         {
+            _gameOver = true;
             Debug.Log($"{status} wins, game over");
-            Init();
         }
 
         private CellType WhosWinning()

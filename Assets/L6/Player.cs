@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +19,6 @@ namespace L6
             isMyTurn = GameManager.Instance.IsMyTurn(this.connectionToClient.identity.netId);
             Debug.Log($"server: {this.connectionToClient.identity.netId} myTurn {isMyTurn}");
             //setup isx according to num of player
-            RPCUpdateTurn(isMyTurn);
         }
 
         private void Start()
@@ -27,6 +27,7 @@ namespace L6
             {
                 Destroy(TurnTxt);
             }
+            RPCUpdateTurn(isMyTurn);
         }
 
         private void Update()
@@ -52,6 +53,30 @@ namespace L6
             {
                 CmdTakeAction(3);
             }
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                CmdTakeAction(4);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
+            {
+                CmdTakeAction(5);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
+                CmdTakeAction(6);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha7))
+            {
+                CmdTakeAction(7);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha8))
+            {
+                CmdTakeAction(8);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha9))
+            {
+                CmdTakeAction(9);
+            }
         }
 
         [Command]
@@ -60,11 +85,16 @@ namespace L6
             //check valid
             //take action
             // next tuen
-            GameManager.Instance.NextTurn();
+            GameManager.Instance.TakeAction(squareID, isX);
         }
 
         [ClientRpc]
         public void RPCUpdateTurn(bool turn)
+        {
+            SetTurn(turn);
+        }
+
+        private void SetTurn(bool turn)
         {
             isMyTurn = turn;
             if (TurnTxt && isMyTurn)
@@ -74,8 +104,15 @@ namespace L6
             else if (TurnTxt)
             {
                 TurnTxt.text = string.Empty;
-
             }
+        }
+
+        [ClientRpc]
+        public void RPCUpdateCell(int num)
+        {
+            Debug.Log($"update cell {num}");
+            var cell = FindObjectsOfType<Cell>().First(x => x.name == num.ToString());
+            cell.UpdateText();
         }
     }
 }
