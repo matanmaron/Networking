@@ -6,13 +6,9 @@ namespace L6
 {
     public class UIPanel : MonoBehaviour
     {
-        public void StartGame(CellType turn)
+        public void ShowTurn(bool isX)
         {
-            ShowTurn(turn);
-        }
-
-        public void ShowTurn(CellType turn)
-        {
+            var turn = isX ? CellType.X : CellType.O;
             Debug.Log($"Turn - {turn}");
         }
     }

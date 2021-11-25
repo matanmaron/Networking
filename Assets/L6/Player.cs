@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace L6
 {
@@ -9,6 +10,7 @@ namespace L6
     {
         [SyncVar] public bool isMyTurn;
         [SyncVar] public bool isX;
+        [SerializeField] Text TurnTxt;
 
         public override void OnStartServer()
         {
@@ -16,6 +18,15 @@ namespace L6
             isMyTurn = GameManager.Instance.IsMyTurn(this.connectionToClient.identity.netId);
             Debug.Log($"server: {this.connectionToClient.identity.netId} myTurn {isMyTurn}");
             //setup isx according to num of player
+            RPCUpdateTurn(isMyTurn);
+        }
+
+        private void Start()
+        {
+            if (!isLocalPlayer)
+            {
+                Destroy(TurnTxt);
+            }
         }
 
         private void Update()
@@ -29,7 +40,18 @@ namespace L6
                 return;
             }
             //check input
-            CmdTakeAction(1);
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                CmdTakeAction(1);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                CmdTakeAction(2);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                CmdTakeAction(3);
+            }
         }
 
         [Command]
@@ -39,6 +61,21 @@ namespace L6
             //take action
             // next tuen
             GameManager.Instance.NextTurn();
+        }
+
+        [ClientRpc]
+        public void RPCUpdateTurn(bool turn)
+        {
+            isMyTurn = turn;
+            if (TurnTxt && isMyTurn)
+            {
+                TurnTxt.text = "my turn";
+            }
+            else if (TurnTxt)
+            {
+                TurnTxt.text = string.Empty;
+
+            }
         }
     }
 }

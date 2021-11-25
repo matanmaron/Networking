@@ -1,10 +1,12 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace L6
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : NetworkBehaviour
     {
         #region Singleton
         public static GameManager Instance { get; private set; }
@@ -23,11 +25,9 @@ namespace L6
         }
         #endregion
 
-        [HideInInspector] public CellType Turn = CellType.None;
-
         Cell[] _board;
-        [SerializeField] GamePanel _gamePanel;
-        [SerializeField] UIPanel _uiPanel;
+        GamePanel _gamePanel;
+        UIPanel _uiPanel;
 
         private bool wasInit = false;
         private uint playerIDTurn = 0;
@@ -43,27 +43,40 @@ namespace L6
             return playerIDTurn == playerNetID;
         }
 
-        public void NetTurn()
+        private void Start()
         {
-            TicTacToePlayer[] players = GameObject.FindObjectsOfType<TicTacToePlayer>();
+            _gamePanel = FindObjectOfType<GamePanel>();
+            _uiPanel = FindObjectOfType<UIPanel>();
+            Init();
+        }
+
+        public void NextTurn()
+        {
+            Debug.Log("NextTurn()");
+            Player[] players = FindObjectsOfType<Player>();
             if (players.Length != 2)
             {
                 throw new System.InvalidProgramException($"Number of players is illegal - {players.Length}");
             }
             //find next player turn
+            if (playerIDTurn == players[0].connectionToClient.identity.netId)
+            {
+                playerIDTurn = players[1].connectionToClient.identity.netId;
+            }
+            else
+            {
+                playerIDTurn = players[0].connectionToClient.identity.netId;
+            }
             //update all players
+            foreach (var p in players)
+            {
+                p.RPCUpdateTurn(playerIDTurn == p.connectionToClient.identity.netId);
+            }
         }
 
-        private void Start()
+        private void Init()
         {
-            StartGame();
-        }
-
-        private void StartGame()
-        {
-            Turn = (CellType)Random.Range(1, 3);
-            _gamePanel.StartGame();
-            _uiPanel.StartGame(Turn);
+            _gamePanel.Init();
         }
 
         public void SetCells(List<Cell> cells)
@@ -89,14 +102,14 @@ namespace L6
                 default:
                     break;
             }
-            Turn = Turn == CellType.X ? CellType.O : CellType.X;
-            _uiPanel.ShowTurn(Turn);
+            NextTurn();
+            _uiPanel.ShowTurn(FindObjectsOfType<Player>().First(x => x.isMyTurn).isX);
         }
 
         private void WinGame(CellType status)
         {
             Debug.Log($"{status} wins, game over");
-            StartGame();
+            Init();
         }
 
         private CellType WhosWinning()
