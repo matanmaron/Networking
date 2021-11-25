@@ -29,6 +29,31 @@ namespace L6
         [SerializeField] GamePanel _gamePanel;
         [SerializeField] UIPanel _uiPanel;
 
+        private bool wasInit = false;
+        private uint playerIDTurn = 0;
+        public uint PlayerIDTurn => playerIDTurn;
+
+        public bool IsMyTurn(uint playerNetID)
+        {
+            if (!wasInit)
+            {
+                playerIDTurn = playerNetID;
+                wasInit = true;
+            }
+            return playerIDTurn == playerNetID;
+        }
+
+        public void NetTurn()
+        {
+            TicTacToePlayer[] players = GameObject.FindObjectsOfType<TicTacToePlayer>();
+            if (players.Length != 2)
+            {
+                throw new System.InvalidProgramException($"Number of players is illegal - {players.Length}");
+            }
+            //find next player turn
+            //update all players
+        }
+
         private void Start()
         {
             StartGame();
