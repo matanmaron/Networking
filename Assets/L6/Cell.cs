@@ -10,23 +10,11 @@ namespace L6
     {
         [SerializeField] Text _cellText;
         [HideInInspector] public CellType CellValue = CellType.None;
-        [SyncVar] string text;
 
-        public void Clean()
+        public void UpdateText(string text)
         {
-            CellValue = CellType.None;
-            _cellText.text = string.Empty;
-            text = string.Empty;
-        }
-
-        public void SetText(string txt)
-        {
-            text = txt;
-            UpdateText();
-        }
-
-        public void UpdateText()
-        {
+            _cellText.fontSize = 88;
+            Debug.Log($"cell value - {text}");
             _cellText.text = text;
         }
     }

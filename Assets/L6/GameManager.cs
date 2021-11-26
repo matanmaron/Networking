@@ -30,7 +30,7 @@ namespace L6
         private bool wasInit = false;
         private uint playerIDTurn = 0;
         bool _gameOver = false;
-
+        bool wasXinit = false;
         public uint PlayerIDTurn => playerIDTurn;
 
         public bool IsMyTurn(uint playerNetID)
@@ -43,18 +43,29 @@ namespace L6
             return playerIDTurn == playerNetID;
         }
 
+        public bool IsMeX()
+        {
+            if (wasXinit)
+            {
+                return false;
+            }
+            wasXinit = true;
+            return true;
+        }
+
         private void Start()
         {
             _board = FindObjectsOfType<Cell>().OrderBy(x => x.name).ToArray();
-            foreach (var cell in _board)
-            {
-                cell.Clean();
-            }
         }
 
         public void TakeAction(int squareID, bool isX)
         {
-            Debug.Log($"take action on {squareID}");
+            Debug.Log($"take action on {squareID}, x-{isX}");
+            if (FindObjectsOfType<Player>().Length != 2)
+            {
+                Debug.Log("waiting for more players...");
+                return;
+            }
             if (_gameOver)
             {
                 Debug.Log("GAME OVER...");
@@ -66,10 +77,9 @@ namespace L6
                 return;
             }
             _board[squareID-1].CellValue = isX ? CellType.X : CellType.O;
-            _board[squareID-1].SetText(_board[squareID-1].CellValue.ToString());
             foreach (var p in FindObjectsOfType<Player>())
             {
-                p.RPCUpdateCell(squareID);
+                p.RPCUpdateCell(squareID, _board[squareID - 1].CellValue.ToString());
             }
             AfterTurnChecks();
         }

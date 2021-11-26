@@ -19,6 +19,7 @@ namespace L6
             isMyTurn = GameManager.Instance.IsMyTurn(this.connectionToClient.identity.netId);
             Debug.Log($"server: {this.connectionToClient.identity.netId} myTurn {isMyTurn}");
             //setup isx according to num of player
+            isX = GameManager.Instance.IsMeX();
         }
 
         private void Start()
@@ -27,7 +28,7 @@ namespace L6
             {
                 Destroy(TurnTxt);
             }
-            RPCUpdateTurn(isMyTurn);
+            SetTurn(isMyTurn);
         }
 
         private void Update()
@@ -108,11 +109,11 @@ namespace L6
         }
 
         [ClientRpc]
-        public void RPCUpdateCell(int num)
+        public void RPCUpdateCell(int num, string text)
         {
             Debug.Log($"update cell {num}");
             var cell = FindObjectsOfType<Cell>().First(x => x.name == num.ToString());
-            cell.UpdateText();
+            cell.UpdateText(text);
         }
     }
 }
