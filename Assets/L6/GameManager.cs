@@ -59,22 +59,6 @@ namespace L6
             _board = FindObjectsOfType<Cell>().OrderBy(x => x.name).ToArray();
         }
 
-        public override void OnStopServer()
-        {
-            base.OnStopServer();
-            int i = 1;
-            foreach (var cell in _board)
-            {
-                cell.CellValue = CellType.None;
-                cell.UpdateText(i.ToString(), 33);
-                i++;
-            }
-            foreach (var p in FindObjectsOfType<Player>())
-            {
-                p.UpdateUIText(string.Empty);
-            }
-        }
-
         public void TakeAction(int squareID, bool isX)
         {
             Debug.Log($"take action on {squareID}, x-{isX}");

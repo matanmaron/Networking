@@ -7,13 +7,13 @@ namespace L6
 {
     public class NetworkManagerTTT : NetworkManager
     {
-        [SerializeField] GameObject GameManager;
+        [SerializeField] GameObject gameManager;
         public override void OnStartServer()
         {
             base.OnStartServer();
             if (FindObjectOfType<GameManager>() == null)
             {
-                Instantiate(GameManager);
+                Instantiate(gameManager);
             }
         }
     }

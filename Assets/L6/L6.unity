@@ -487,7 +487,7 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
-  GameManager: {fileID: 5736520460002183835, guid: ac803f03b13f3ad4d8a8724361565bab, type: 3}
+  gameManager: {fileID: 5736520460002183835, guid: ac803f03b13f3ad4d8a8724361565bab, type: 3}
 --- !u!114 &218899202
 MonoBehaviour:
   m_ObjectHideFlags: 0
