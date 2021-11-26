@@ -55,7 +55,24 @@ namespace L6
 
         private void Start()
         {
+            Debug.Log("start");
             _board = FindObjectsOfType<Cell>().OrderBy(x => x.name).ToArray();
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            int i = 1;
+            foreach (var cell in _board)
+            {
+                cell.CellValue = CellType.None;
+                cell.UpdateText(i.ToString(), 33);
+                i++;
+            }
+            foreach (var p in FindObjectsOfType<Player>())
+            {
+                p.UpdateUIText(string.Empty);
+            }
         }
 
         public void TakeAction(int squareID, bool isX)
@@ -63,12 +80,20 @@ namespace L6
             Debug.Log($"take action on {squareID}, x-{isX}");
             if (FindObjectsOfType<Player>().Length != 2)
             {
+                foreach (var p in FindObjectsOfType<Player>())
+                {
+                    p.UpdateUIText("waiting for more players...");
+                }
                 Debug.Log("waiting for more players...");
                 return;
             }
             if (_gameOver)
             {
                 Debug.Log("GAME OVER...");
+                foreach (var p in FindObjectsOfType<Player>())
+                {
+                    p.UpdateUIText("GAME OVER...");
+                }
                 return;
             }
             if (_board[squareID-1].CellValue != CellType.None)
@@ -134,6 +159,10 @@ namespace L6
         private void WinGame(CellType status)
         {
             _gameOver = true;
+            foreach (var p in FindObjectsOfType<Player>())
+            {
+                p.UpdateUIText($"{status} wins, game over");
+            }
             Debug.Log($"{status} wins, game over");
         }
 

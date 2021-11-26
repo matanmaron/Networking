@@ -98,9 +98,10 @@ namespace L6
         private void SetTurn(bool turn)
         {
             isMyTurn = turn;
+            string isx = isX ? "X" : "O";
             if (TurnTxt && isMyTurn)
             {
-                TurnTxt.text = "my turn";
+                TurnTxt.text = $"my turn ({isx})";
             }
             else if (TurnTxt)
             {
@@ -114,6 +115,15 @@ namespace L6
             Debug.Log($"update cell {num}");
             var cell = FindObjectsOfType<Cell>().First(x => x.name == num.ToString());
             cell.UpdateText(text);
+        }
+
+        [ClientRpc]
+        public void UpdateUIText(string txt)
+        {
+            if (TurnTxt)
+            {
+                TurnTxt.text = txt;
+            }
         }
     }
 }
