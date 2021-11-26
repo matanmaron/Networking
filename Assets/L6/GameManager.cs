@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace L6
 {
-    public class GameManager : NetworkBehaviour
+    public class GameManager : MonoBehaviour
     {
         #region Singleton
         public static GameManager Instance { get; private set; }
