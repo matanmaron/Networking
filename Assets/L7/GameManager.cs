@@ -1,10 +1,13 @@
+using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace L7
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : NetworkBehaviour
     {
         #region Singleton
         public static GameManager Instance { get; private set; }
@@ -23,27 +26,97 @@ namespace L7
         }
         #endregion
 
-        [HideInInspector] public CellType Turn = CellType.None;
+        int[] _board = new int[9];
+        Canvas3D _canvas3D;
+        private bool wasInit = false;
+        private uint playerIDTurn = 0;
+        bool _gameOver = false;
+        bool wasXinit = false;
+        public uint PlayerIDTurn => playerIDTurn;
 
-        Cell[] _board;
-        [SerializeField] GamePanel _gamePanel;
-        [SerializeField] UIPanel _uiPanel;
+        public bool IsMyTurn(uint playerNetID)
+        {
+            if (!wasInit)
+            {
+                playerIDTurn = playerNetID;
+                wasInit = true;
+            }
+            return playerIDTurn == playerNetID;
+        }
+
+        public bool IsMeX()
+        {
+            if (wasXinit)
+            {
+                return false;
+            }
+            wasXinit = true;
+            return true;
+        }
 
         private void Start()
         {
-            StartGame();
+            Debug.Log("start");
+            for (int i = 0; i < _board.Length; i++)
+            {
+                _board[i] = (int)CellType.None;
+            }
+            _canvas3D = FindObjectOfType<Canvas3D>();
         }
 
-        private void StartGame()
+        public void TakeAction(int squareID, bool isX)
         {
-            Turn = (CellType)Random.Range(1, 3);
-            _gamePanel.StartGame();
-            _uiPanel.StartGame(Turn);
+            Debug.Log($"take action on {squareID}, x-{isX}");
+            if (FindObjectsOfType<Player>().Length != 2)
+            {
+                foreach (var p in FindObjectsOfType<Player>())
+                {
+                    p.UpdateUIText("waiting for more players...");
+                }
+                Debug.Log("waiting for more players...");
+                return;
+            }
+            if (_gameOver)
+            {
+                Debug.Log("GAME OVER...");
+                foreach (var p in FindObjectsOfType<Player>())
+                {
+                    p.UpdateUIText("GAME OVER...");
+                }
+                return;
+            }
+            if (_board[squareID - 1] != (int)CellType.None)
+            {
+                Debug.Log("TAKEN!!");
+                return;
+            }
+            _board[squareID - 1] = isX ? (int)CellType.X : (int)CellType.O;
+            _canvas3D.UpdateBoard(squareID, _board[squareID - 1]);
+            AfterTurnChecks();
         }
 
-        public void SetCells(List<Cell> cells)
+        public void NextTurn()
         {
-            _board = cells.ToArray();
+            Debug.Log("NextTurn()");
+            Player[] players = FindObjectsOfType<Player>();
+            if (players.Length != 2)
+            {
+                throw new System.InvalidProgramException($"Number of players is illegal - {players.Length}");
+            }
+            //find next player turn
+            if (playerIDTurn == players[0].connectionToClient.identity.netId)
+            {
+                playerIDTurn = players[1].connectionToClient.identity.netId;
+            }
+            else
+            {
+                playerIDTurn = players[0].connectionToClient.identity.netId;
+            }
+            //update all players
+            foreach (var p in players)
+            {
+                p.RPCUpdateTurn(playerIDTurn == p.connectionToClient.identity.netId);
+            }
         }
 
         public void AfterTurnChecks()
@@ -51,6 +124,8 @@ namespace L7
             if (isFullBoard())
             {
                 Debug.Log("board full, game over");
+                WinGame(CellType.None);
+                return;
             }
             var status = WhosWinning();
             switch (status)
@@ -64,14 +139,17 @@ namespace L7
                 default:
                     break;
             }
-            Turn = Turn == CellType.X ? CellType.O : CellType.X;
-            _uiPanel.ShowTurn(Turn);
+            NextTurn();
         }
 
         private void WinGame(CellType status)
         {
+            _gameOver = true;
+            foreach (var p in FindObjectsOfType<Player>())
+            {
+                p.UpdateUIText($"{status} wins, game over");
+            }
             Debug.Log($"{status} wins, game over");
-            StartGame();
         }
 
         private CellType WhosWinning()
@@ -79,27 +157,27 @@ namespace L7
             //row
             for (int i = 0; i < _board.Length; i += 3)
             {
-                if (_board[i].CellValue == _board[i + 1].CellValue && _board[i + 1].CellValue == _board[i + 2].CellValue && _board[i].CellValue != CellType.None)
+                if (_board[i] == _board[i + 1] && _board[i + 1] == _board[i + 2] && _board[i] != (int)CellType.None)
                 {
-                    return _board[i].CellValue;
+                    return (CellType)_board[i];
                 }
             }
             //column
             for (int i = 0; i < 3; i++)
             {
-                if (_board[i].CellValue == _board[i + 3].CellValue && _board[i + 3].CellValue == _board[i + 6].CellValue && _board[i].CellValue != CellType.None)
+                if (_board[i] == _board[i + 3] && _board[i + 3] == _board[i + 6] && _board[i] != (int)CellType.None)
                 {
-                    return _board[i].CellValue;
+                    return (CellType)_board[i];
                 }
             }
             //diagonal
-            if (_board[0].CellValue == _board[4].CellValue && _board[4].CellValue == _board[8].CellValue && _board[0].CellValue != CellType.None)
+            if (_board[0] == _board[4] && _board[4] == _board[8] && _board[0] != (int)CellType.None)
             {
-                return _board[0].CellValue;
+                return (CellType)_board[0];
             }
-            if (_board[2].CellValue == _board[4].CellValue && _board[4].CellValue == _board[6].CellValue && _board[2].CellValue != CellType.None)
+            if (_board[2] == _board[4] && _board[4] == _board[6] && _board[2] != (int)CellType.None)
             {
-                return _board[2].CellValue;
+                return (CellType)_board[2];
             }
             return CellType.None;
         }
@@ -108,7 +186,7 @@ namespace L7
         {
             for (int i = 0; i < _board.Length; i++)
             {
-                if (_board[i].CellValue == CellType.None)
+                if (_board[i] == (int)CellType.None)
                 {
                     return false;
                 }

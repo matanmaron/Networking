@@ -1,10 +1,11 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace L7
 {
-    public class UIPanel : MonoBehaviour
+    public class UIPanel : NetworkBehaviour
     {
         public void StartGame(CellType turn)
         {

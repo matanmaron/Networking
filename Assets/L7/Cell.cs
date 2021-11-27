@@ -1,3 +1,5 @@
+using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,28 +7,34 @@ using UnityEngine.UI;
 
 namespace L7
 {
-    public class Cell : MonoBehaviour
+    public class Cell : NetworkBehaviour
     {
-        [SerializeField] Text _cellText;
-        [HideInInspector] public CellType CellValue = CellType.None;
-
-        private void Start()
+        [SerializeField] GameObject X;
+        [SerializeField] GameObject O;
+        CellType _cellValue = CellType.None;
+        public CellType CellValue => _cellValue;
+        public void SetCell(CellType value)
         {
-            var btn = GetComponent<Button>();
-            btn.onClick.AddListener(OnClick);
-        }
-
-        private void OnClick()
-        {
-            CellValue = GameManager.Instance.Turn;
-            _cellText.text = CellValue.ToString();
-            GameManager.Instance.AfterTurnChecks();
+            _cellValue = value;
+            switch (_cellValue)
+            {
+                case CellType.None:
+                    Destroy(GetComponentInChildren<Transform>().gameObject);
+                    break;
+                case CellType.X:
+                    Instantiate(X, transform);
+                    break;
+                case CellType.O:
+                    Instantiate(O, transform);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void Clean()
         {
-            CellValue = CellType.None;
-            _cellText.text = string.Empty;
+            SetCell(CellType.None);
         }
     }
 }
