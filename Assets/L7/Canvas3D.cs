@@ -11,18 +11,24 @@ namespace L7
         [SerializeField] List<GameObject> cellHolders;
         [SerializeField] Cell cellPrefab;
 
-        [SerializeField] List<Cell> cells;
+        List<Cell> cells = new List<Cell>();
 
         public void StartGame()
         {
             foreach (var holder in cellHolders)
             {
-                Instantiate(cellPrefab, holder.transform);
+                var cell = Instantiate(cellPrefab, holder.transform);
+                cells.Add(cell);
             }
+            NetworkServer.SpawnObjects();
         }
 
         public void UpdateBoard(int squareID, int value)
         {
+            if (cells.Count == 0)
+            {
+                StartGame();
+            }
             cells[squareID].SetCell((CellType)value);
         }
     }

@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +10,16 @@ namespace L7
 {
     public class Player : NetworkBehaviour
     {
-        [SyncVar] public bool isMyTurn;
-        [SyncVar] public bool isX;
+        [SyncVar] public int mySign = (int)CellType.None;
         [SerializeField] Text TurnTxt;
+        private bool isMyTurn => GameManager.Instance.IsMyTurn(this.connectionToClient.identity.netId);
 
         public override void OnStartServer()
         {
             base.OnStartServer();
-            isMyTurn = GameManager.Instance.IsMyTurn(this.connectionToClient.identity.netId);
-            Debug.Log($"server: {this.connectionToClient.identity.netId} myTurn {isMyTurn}");
+            Debug.Log($"server: {this.connectionToClient.identity.netId}");
             //setup isx according to num of player
-            isX = GameManager.Instance.IsMeX();
+            mySign = GameManager.Instance.GetSign();
         }
 
         private void Start()
@@ -28,7 +28,7 @@ namespace L7
             {
                 Destroy(TurnTxt);
             }
-            SetTurn(isMyTurn);
+            SetTurn(isMyTurn, (CellType)mySign);
         }
 
         private void Update()
@@ -86,22 +86,20 @@ namespace L7
             //check valid
             //take action
             // next tuen
-            GameManager.Instance.TakeAction(squareID, isX);
+            GameManager.Instance.TakeAction(squareID, mySign == (int)CellType.X);
         }
 
         [ClientRpc]
-        public void RPCUpdateTurn(bool turn)
+        public void RPCUpdateTurn()
         {
-            SetTurn(turn);
+            SetTurn(isMyTurn, (CellType)mySign);
         }
 
-        private void SetTurn(bool turn)
+        private void SetTurn(bool isMyTurn, CellType turn)
         {
-            isMyTurn = turn;
-            string isx = isX ? "X" : "O";
             if (TurnTxt && isMyTurn)
             {
-                TurnTxt.text = $"my turn ({isx})";
+                TurnTxt.text = $"my turn ({turn})";
             }
             else if (TurnTxt)
             {

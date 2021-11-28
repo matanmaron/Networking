@@ -28,30 +28,24 @@ namespace L7
 
         int[] _board = new int[9];
         Canvas3D _canvas3D;
-        private bool wasInit = false;
         private uint playerIDTurn = 0;
         bool _gameOver = false;
-        bool wasXinit = false;
         public uint PlayerIDTurn => playerIDTurn;
-
-        public bool IsMyTurn(uint playerNetID)
+        int players = 0;
+        
+        public int GetSign()
         {
-            if (!wasInit)
+            if (players>2)
             {
-                playerIDTurn = playerNetID;
-                wasInit = true;
+                return 0;
             }
-            return playerIDTurn == playerNetID;
+            players++;
+            return players;
         }
 
-        public bool IsMeX()
+        public bool IsMyTurn(uint id)
         {
-            if (wasXinit)
-            {
-                return false;
-            }
-            wasXinit = true;
-            return true;
+            return PlayerIDTurn == id;
         }
 
         private void Start()
@@ -91,7 +85,7 @@ namespace L7
                 return;
             }
             _board[squareID - 1] = isX ? (int)CellType.X : (int)CellType.O;
-            _canvas3D.UpdateBoard(squareID, _board[squareID - 1]);
+            _canvas3D.UpdateBoard(squareID-1, _board[squareID - 1]);
             AfterTurnChecks();
         }
 
@@ -115,7 +109,7 @@ namespace L7
             //update all players
             foreach (var p in players)
             {
-                p.RPCUpdateTurn(playerIDTurn == p.connectionToClient.identity.netId);
+                p.RPCUpdateTurn();
             }
         }
 

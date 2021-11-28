@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 720515d85925cd04a943a976bac21343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  X: {fileID: 0}
+  syncMode: 0
+  syncInterval: 0.1
+  X: {fileID: 4497860090459200710, guid: 0e62cdd2aaaba684bacf9948924a2cec, type: 3}
   O: {fileID: 369024449998649329, guid: bd66e971dee007940a76858c72f8b4d2, type: 3}
-  CellValue: 0

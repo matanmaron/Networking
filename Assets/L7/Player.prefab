@@ -246,3 +246,4 @@ MonoBehaviour:
   isMyTurn: 0
   isX: 0
   TurnTxt: {fileID: 1171998568}
+  canvas3D: {fileID: 1378939139169970743, guid: 3032509616f3b9a4da4ba27ec4fecc0b, type: 3}
