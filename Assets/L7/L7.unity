@@ -579,6 +579,8 @@ MonoBehaviour:
   - {fileID: 7367921414965126161, guid: e8e7e153d9932534290dd353b705589a, type: 3}
   - {fileID: 593864805140928461, guid: fcd1df23f4620fe4a99de2374e10a5d7, type: 3}
   - {fileID: 1378939139169970743, guid: 3032509616f3b9a4da4ba27ec4fecc0b, type: 3}
+  - {fileID: 4497860090459200710, guid: 0e62cdd2aaaba684bacf9948924a2cec, type: 3}
+  - {fileID: 369024449998649329, guid: bd66e971dee007940a76858c72f8b4d2, type: 3}
   gameManager: {fileID: 593864805140928461, guid: fcd1df23f4620fe4a99de2374e10a5d7, type: 3}
 --- !u!4 &1064600729
 Transform:

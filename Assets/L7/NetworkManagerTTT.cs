@@ -13,7 +13,8 @@ namespace L7
             base.OnStartServer();
             if (FindObjectOfType<GameManager>() == null)
             {
-                Instantiate(gameManager);
+                var go = Instantiate(gameManager);
+                NetworkServer.Spawn(go);
             }
         }
     }

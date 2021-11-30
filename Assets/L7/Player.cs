@@ -12,7 +12,7 @@ namespace L7
     {
         [SyncVar] public int mySign = (int)CellType.None;
         [SerializeField] Text TurnTxt;
-        private bool isMyTurn => GameManager.Instance.IsMyTurn(this.connectionToClient.identity.netId);
+        private bool isMyTurn => GameManager.Instance.Turn == mySign;
 
         public override void OnStartServer()
         {

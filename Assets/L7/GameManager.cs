@@ -28,11 +28,10 @@ namespace L7
 
         int[] _board = new int[9];
         Canvas3D _canvas3D;
-        private uint playerIDTurn = 0;
+        [SyncVar] public int Turn = 1;
+        [SyncVar] int players = 0;
         bool _gameOver = false;
-        public uint PlayerIDTurn => playerIDTurn;
-        int players = 0;
-        
+
         public int GetSign()
         {
             if (players>2)
@@ -42,12 +41,6 @@ namespace L7
             players++;
             return players;
         }
-
-        public bool IsMyTurn(uint id)
-        {
-            return PlayerIDTurn == id;
-        }
-
         private void Start()
         {
             Debug.Log("start");
@@ -92,22 +85,16 @@ namespace L7
         public void NextTurn()
         {
             Debug.Log("NextTurn()");
-            Player[] players = FindObjectsOfType<Player>();
-            if (players.Length != 2)
+            if (Turn == (int)CellType.X)
             {
-                throw new System.InvalidProgramException($"Number of players is illegal - {players.Length}");
-            }
-            //find next player turn
-            if (playerIDTurn == players[0].connectionToClient.identity.netId)
-            {
-                playerIDTurn = players[1].connectionToClient.identity.netId;
+                Turn = (int)CellType.O;
             }
             else
             {
-                playerIDTurn = players[0].connectionToClient.identity.netId;
+                Turn = (int)CellType.X;
             }
             //update all players
-            foreach (var p in players)
+            foreach (var p in FindObjectsOfType<Player>())
             {
                 p.RPCUpdateTurn();
             }
