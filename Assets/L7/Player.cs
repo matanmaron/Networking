@@ -12,6 +12,16 @@ namespace L7
     {
         [SyncVar] public int mySign = (int)CellType.None;
         [SerializeField] Text TurnTxt;
+        private Canvas3D _canvas3D;
+        public Canvas3D Canvas3d { get
+            {
+                if (_canvas3D == null)
+                {
+                    _canvas3D = FindObjectOfType<Canvas3D>();
+                }
+                return _canvas3D;
+            }
+        }
         private bool isMyTurn => GameManager.Instance.Turn == mySign;
 
         public override void OnStartServer()

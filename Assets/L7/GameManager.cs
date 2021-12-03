@@ -27,7 +27,6 @@ namespace L7
         #endregion
 
         int[] _board = new int[9];
-        Canvas3D _canvas3D;
         [SyncVar] public int Turn = 1;
         [SyncVar] int players = 0;
         bool _gameOver = false;
@@ -48,7 +47,6 @@ namespace L7
             {
                 _board[i] = (int)CellType.None;
             }
-            _canvas3D = FindObjectOfType<Canvas3D>();
         }
 
         public void TakeAction(int squareID, bool isX)
@@ -78,7 +76,10 @@ namespace L7
                 return;
             }
             _board[squareID - 1] = isX ? (int)CellType.X : (int)CellType.O;
-            _canvas3D.UpdateBoard(squareID-1, _board[squareID - 1]);
+            foreach (var p in FindObjectsOfType<Player>())
+            {
+                p.Canvas3d.RPCUpdateBoard(squareID - 1, _board[squareID - 1]);
+            }
             AfterTurnChecks();
         }
 

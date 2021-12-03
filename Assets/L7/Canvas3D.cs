@@ -20,10 +20,10 @@ namespace L7
                 var cell = Instantiate(cellPrefab, holder.transform);
                 cells.Add(cell);
             }
-            NetworkServer.SpawnObjects();
         }
 
-        public void UpdateBoard(int squareID, int value)
+        [ClientRpc]
+        public void RPCUpdateBoard(int squareID, int value)
         {
             if (cells.Count == 0)
             {

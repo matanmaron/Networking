@@ -22,12 +22,10 @@ namespace L7
                     Destroy(GetComponentInChildren<Transform>().gameObject);
                     break;
                 case CellType.X:
-                    var go = Instantiate(X, transform);
-                    NetworkServer.Spawn(go);
+                    Instantiate(X, transform);
                     break;
                 case CellType.O:
-                    var go2 = Instantiate(O, transform);
-                    NetworkServer.Spawn(go2);
+                    Instantiate(O, transform);
                     break;
                 default:
                     break;
