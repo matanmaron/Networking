@@ -10,9 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3573244216088230792}
   - component: {fileID: 2730656324503996468}
-  - component: {fileID: -6948909221570762908}
   - component: {fileID: 8108314069910000843}
-  - component: {fileID: 3657864110110853688}
   m_Layer: 0
   m_Name: Cell
   m_TagString: Untagged
@@ -46,40 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 720515d85925cd04a943a976bac21343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
   X: {fileID: 4497860090459200710, guid: 0e62cdd2aaaba684bacf9948924a2cec, type: 3}
   O: {fileID: 369024449998649329, guid: bd66e971dee007940a76858c72f8b4d2, type: 3}
---- !u!114 &-6948909221570762908
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7367921414965126161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  clientAuthority: 0
-  sendInterval: 0.05
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 0
-  bufferTimeMultiplier: 1
-  bufferSizeLimit: 64
-  catchupThreshold: 4
-  catchupMultiplier: 0.1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  target: {fileID: 0}
 --- !u!114 &8108314069910000843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -97,32 +63,3 @@ MonoBehaviour:
   visible: 0
   m_AssetId: e8e7e153d9932534290dd353b705589a
   hasSpawned: 0
---- !u!114 &3657864110110853688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7367921414965126161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  clientAuthority: 0
-  sendInterval: 0.05
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 0
-  bufferTimeMultiplier: 1
-  bufferSizeLimit: 64
-  catchupThreshold: 4
-  catchupMultiplier: 0.1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}

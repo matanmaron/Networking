@@ -11,8 +11,10 @@ namespace L7
     public class Player : NetworkBehaviour
     {
         [SyncVar] public int mySign = (int)CellType.None;
-        [SerializeField] Text TurnTxt;
+        [SerializeField] Text mySignTxt;
+        [SerializeField] Text nowPlayTxt;
         private Canvas3D _canvas3D;
+
         public Canvas3D Canvas3d { get
             {
                 if (_canvas3D == null)
@@ -34,11 +36,28 @@ namespace L7
 
         private void Start()
         {
+            TestMySign();
+            TestNowPlay();
+        }
+
+        private void TestNowPlay()
+        {
             if (!isLocalPlayer)
             {
-                Destroy(TurnTxt);
+                Destroy(nowPlayTxt);
+                return;
             }
-            SetTurn(isMyTurn, (CellType)mySign);
+            nowPlayTxt.text = $"now: {(CellType)GameManager.Instance.Turn}";
+        }
+
+        private void TestMySign()
+        {
+            if (!isLocalPlayer)
+            {
+                Destroy(mySignTxt);
+                return;
+            }
+            mySignTxt.text = $"you are {(CellType)mySign}";
         }
 
         private void Update()
@@ -93,6 +112,10 @@ namespace L7
         [Command]
         private void CmdTakeAction(int squareID)
         {
+            if (mySignTxt)
+            {
+                mySignTxt.text = $"you are {(CellType)mySign}";
+            }
             //check valid
             //take action
             // next tuen
@@ -100,29 +123,20 @@ namespace L7
         }
 
         [ClientRpc]
-        public void RPCUpdateTurn()
+        public void UpdateUIText(string txt)
         {
-            SetTurn(isMyTurn, (CellType)mySign);
-        }
-
-        private void SetTurn(bool isMyTurn, CellType turn)
-        {
-            if (TurnTxt && isMyTurn)
+            if (mySignTxt)
             {
-                TurnTxt.text = $"my turn ({turn})";
-            }
-            else if (TurnTxt)
-            {
-                TurnTxt.text = string.Empty;
+                mySignTxt.text = txt;
             }
         }
 
         [ClientRpc]
-        public void UpdateUIText(string txt)
+        public void UpdateTurnText(string txt)
         {
-            if (TurnTxt)
+            if (nowPlayTxt)
             {
-                TurnTxt.text = txt;
+                nowPlayTxt.text = $"now: {txt}";
             }
         }
     }

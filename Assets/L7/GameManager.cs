@@ -76,11 +76,12 @@ namespace L7
                 return;
             }
             _board[squareID - 1] = isX ? (int)CellType.X : (int)CellType.O;
+            FindObjectsOfType<Player>()[0].Canvas3d.RPCUpdateBoard(squareID - 1, _board[squareID - 1]); //fix duplicate bug
+            AfterTurnChecks();
             foreach (var p in FindObjectsOfType<Player>())
             {
-                p.Canvas3d.RPCUpdateBoard(squareID - 1, _board[squareID - 1]);
+                p.UpdateTurnText(((CellType)Turn).ToString());
             }
-            AfterTurnChecks();
         }
 
         public void NextTurn()
@@ -93,11 +94,6 @@ namespace L7
             else
             {
                 Turn = (int)CellType.X;
-            }
-            //update all players
-            foreach (var p in FindObjectsOfType<Player>())
-            {
-                p.RPCUpdateTurn();
             }
         }
 

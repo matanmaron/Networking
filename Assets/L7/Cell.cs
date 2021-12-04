@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace L7
 {
-    public class Cell : NetworkBehaviour
+    public class Cell : MonoBehaviour
     {
         [SerializeField] GameObject X;
         [SerializeField] GameObject O;
@@ -15,6 +15,7 @@ namespace L7
         public CellType CellValue => _cellValue;
         public void SetCell(CellType value)
         {
+            Debug.Log($"SetCell {value}");
             _cellValue = value;
             switch (_cellValue)
             {
@@ -22,10 +23,12 @@ namespace L7
                     Destroy(GetComponentInChildren<Transform>().gameObject);
                     break;
                 case CellType.X:
-                    Instantiate(X, transform);
+                    var x = Instantiate(X, transform);
+                    x.transform.position = new Vector3(0, 15, 0);
                     break;
                 case CellType.O:
-                    Instantiate(O, transform);
+                    var o = Instantiate(O, transform);
+                    o.transform.position = new Vector3(0, 15, 0);
                     break;
                 default:
                     break;
