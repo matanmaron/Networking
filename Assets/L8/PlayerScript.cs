@@ -25,6 +25,9 @@ namespace L8
         [SyncVar(hook = nameof(OnColorChanged))]
         public Color playerColor = Color.white;
 
+        private WeaponAll activeWeapon;
+        private float weaponCooldownTime;
+
         void OnNameChanged(string _Old, string _New)
         {
             playerNameText.text = playerName;
@@ -42,6 +45,11 @@ namespace L8
         {
             //allows all players to run this
             sceneScript = GameObject.Find("SceneReference").GetComponent<SceneReference>().sceneScript;
+            if (selectedWeaponLocal < weaponArray.Length && weaponArray[selectedWeaponLocal] != null)
+            {
+                activeWeapon = weaponArray[selectedWeaponLocal].GetComponent<WeaponAll>();
+                sceneScript.UIAmmo(activeWeapon.weaponAmmo);
+            }
         }
 
         void OnWeaponChanged(int _Old, int _New)
@@ -54,7 +62,12 @@ namespace L8
             // enable new weapon
             // in range and not null
             if (0 < _New && _New < weaponArray.Length && weaponArray[_New] != null)
+            {
                 weaponArray[_New].SetActive(true);
+                activeWeapon = weaponArray[activeWeaponSynced].GetComponent<WeaponAll>();
+                if (isLocalPlayer)
+                    sceneScript.UIAmmo(activeWeapon.weaponAmmo);
+            }
         }
 
         [Command]
@@ -108,6 +121,17 @@ namespace L8
             transform.Rotate(0, moveX, 0);
             transform.Translate(0, 0, moveZ);
 
+            if (Input.GetButtonDown("Fire1")) //Fire1 is mouse 1st click
+            {
+                if (activeWeapon && Time.time > weaponCooldownTime && activeWeapon.weaponAmmo > 0)
+                {
+                    weaponCooldownTime = Time.time + activeWeapon.weaponCooldown;
+                    activeWeapon.weaponAmmo -= 1;
+                    sceneScript.UIAmmo(activeWeapon.weaponAmmo);
+                    CmdShootRay();
+                }
+            }
+
             if (Input.GetButtonDown("Fire2")) //Fire2 is mouse 2nd click and left alt
             {
                 selectedWeaponLocal += 1;
@@ -117,6 +141,21 @@ namespace L8
 
                 CmdChangeActiveWeapon(selectedWeaponLocal);
             }
+        }
+
+        [Command]
+        void CmdShootRay()
+        {
+            RpcFireWeapon();
+        }
+
+        [ClientRpc]
+        void RpcFireWeapon()
+        {
+            //bulletAudio.Play(); muzzleflash  etc
+            GameObject bullet = Instantiate(activeWeapon.weaponBullet, activeWeapon.weaponFirePosition.position, activeWeapon.weaponFirePosition.rotation);
+            bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * activeWeapon.weaponSpeed;
+            Destroy(bullet, activeWeapon.weaponLife);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace L8
         public Text canvasStatusText;
         public PlayerScript playerScript;
         public SceneReference sceneReference;
-
+        public Text canvasAmmoText;
         [SyncVar(hook = nameof(OnStatusTextChanged))]
         public string statusText;
 
@@ -26,6 +26,11 @@ namespace L8
         {
             if (playerScript != null)
                 playerScript.CmdSendPlayerMessage();
+        }
+
+        public void UIAmmo(int _value)
+        {
+            canvasAmmoText.text = "Ammo: " + _value;
         }
 
         public void ButtonChangeScene()
