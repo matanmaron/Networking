@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace L8
@@ -10,6 +11,7 @@ namespace L8
     {
         public Text canvasStatusText;
         public PlayerScript playerScript;
+        public SceneReference sceneReference;
 
         [SyncVar(hook = nameof(OnStatusTextChanged))]
         public string statusText;
@@ -24,6 +26,20 @@ namespace L8
         {
             if (playerScript != null)
                 playerScript.CmdSendPlayerMessage();
+        }
+
+        public void ButtonChangeScene()
+        {
+            if (isServer)
+            {
+                Scene scene = SceneManager.GetActiveScene();
+                if (scene.name == "L8MyScene")
+                    NetworkManager.singleton.ServerChangeScene("L8OtherScene");
+                else
+                    NetworkManager.singleton.ServerChangeScene("L8MyScene");
+            }
+            else
+                Debug.Log("You are not Host.");
         }
     }
 }

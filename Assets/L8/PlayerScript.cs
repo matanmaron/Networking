@@ -40,12 +40,8 @@ namespace L8
 
         void Awake()
         {
-            //allow all players to run this
-            sceneScript = GameObject.FindObjectOfType<SceneScript>();
-            // disable all weapons
-            foreach (var item in weaponArray)
-                if (item != null)
-                    item.SetActive(false);
+            //allows all players to run this
+            sceneScript = GameObject.Find("SceneReference").GetComponent<SceneReference>().sceneScript;
         }
 
         void OnWeaponChanged(int _Old, int _New)
