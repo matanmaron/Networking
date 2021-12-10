@@ -6,15 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/L8/L8Menu.unity
-    guid: 3ea8d670b1e4c254c8e20bfab4595605
-  - enabled: 1
-    path: Assets/L8/L8GameList.unity
-    guid: d46cdadf166010142be199cfabb6b3e1
-  - enabled: 1
-    path: Assets/L8/L8MyScene.unity
-    guid: ba3eed1e0e0b79a418fa19949ac7ddcd
-  - enabled: 1
-    path: Assets/L8/L8OtherScene.unity
-    guid: 57317bcc070f7de478aeb93823d38d34
+    path: Assets/L9/L9.unity
+    guid: d95c223b15ab2bf458bcf7f185c97ab6
   m_configObjects: {}
