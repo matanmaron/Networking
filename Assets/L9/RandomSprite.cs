@@ -10,8 +10,14 @@ namespace L9
         [SerializeField] List<Sprite> sprites;
         void Start()
         {
+            RPCChangeSprite(Random.Range(0, sprites.Count));
+        }
+
+        [ClientRpc]
+        private void RPCChangeSprite(int index)
+        {
             var render = GetComponent<SpriteRenderer>();
-            render.sprite = sprites[Random.Range(0, sprites.Count)];
+            render.sprite = sprites[index];
         }
     }
 }
