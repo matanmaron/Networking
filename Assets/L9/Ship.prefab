@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4340184316116021215}
   - component: {fileID: 8652338818311361980}
   - component: {fileID: 8584152802203487160}
+  - component: {fileID: 5160048757291421567}
   m_Layer: 0
   m_Name: Ship
   m_TagString: Untagged
@@ -119,7 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  speed: 1
+  speed: 5
 --- !u!114 &4952601218666641711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,3 +213,20 @@ MonoBehaviour:
   syncInterval: 0.1
   bulletPrefab: {fileID: 1621686605627432119, guid: df023edf9c1b62a448c0fb7366efab7d, type: 3}
   bulletSpeed: 50
+--- !u!114 &5160048757291421567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4873328202163334138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b1ba41ac590c5f43a4433123c76425b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  maxHealth: 3
+  enemyTag: Enemy
+  destroyOnDeath: 0
